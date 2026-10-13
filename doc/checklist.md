@@ -15,12 +15,12 @@
 
 ## Bài 1 (TensorFlow)
 
-- [ ] TODO 1.11 - Tạo TF placeholders
-- [ ] TODO 1.12 - Tạo TF variable cho w
-- [ ] TODO 1.13 - Tạo toán tử feed forward
-- [ ] TODO 1.14 - Tính độ lỗi
-- [ ] TODO 1.15 - Tạo đối tượng SGD optimizer
-- [ ] TODO 1.16 - Tính cost và cập nhật w
+- [x] TODO 1.11 - Tạo TF placeholders
+- [x] TODO 1.12 - Tạo TF variable cho w
+- [x] TODO 1.13 - Tạo toán tử feed forward
+- [x] TODO 1.14 - Tính độ lỗi
+- [x] TODO 1.15 - Tạo đối tượng SGD optimizer
+- [x] TODO 1.16 - Tính cost và cập nhật w
 
 ## Bài 2 (NumPy) — Phân loại đa lớp (Softmax)
 

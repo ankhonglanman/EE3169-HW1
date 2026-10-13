@@ -101,6 +101,8 @@ def normalize(train_x, val_x, test_x):
     # [TODO 2.1]
     # train_mean and train_std should have the shape of (1, 1)
 
+    
+
     return 
 
 def create_one_hot(labels, num_k=10):

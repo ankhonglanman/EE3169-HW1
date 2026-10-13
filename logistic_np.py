@@ -32,10 +32,16 @@ class LogisticClassifier(object):
         # [TODO 1.5]
         # Compute feedforward result
 
-        def sigmoid(x): 
-            return 1/(1 + np.exp(-x))
+        def sigmoid(x):
+            x = np.asarray(x, dtype=np.float64)
+            out = np.empty_like(x)
+            pos = x >= 0
+            out[pos] = 1.0 / (1.0 + np.exp(-x[pos]))
+            ez = np.exp(x[~pos])
+            out[~pos] = ez / (1.0 + ez)
+            return out
 
-        result = (sigmoid(np.dot(x, self.w)) > 0.5)
+        result = sigmoid(np.dot(x, self.w))
 
         return result
 
@@ -74,7 +80,7 @@ class LogisticClassifier(object):
         # [TODO 1.7]
         # Compute the gradient matrix of w, it has the same size of w
 
-        w_grad = np.average(np.dot(x.T, y_hat - y))
+        w_grad = np.dot(x.T, y_hat - y) / x.shape[0]
         
         return w_grad
 
@@ -162,8 +168,8 @@ def normalize_all_pixel(train_x, test_x):
     train_mean = train_mean.reshape(1, config.IMAGES_HEIGHTS, config.IMAGES_WIDTH)
     test_mean = test_mean.reshape(1, config.IMAGES_HEIGHTS, config.IMAGES_WIDTH)
     
-    train_std = np.std(train_x, axis = 0)
-    test_std = np.std(test_x, axis = 0)
+    train_std = np.std(train_x)
+    test_std = np.std(test_x)
     
     epsilon = 1e-12
 
@@ -208,8 +214,10 @@ def test(y_hat, test_y):
     # [TODO 1.10]
     # Compute test scores using test_y and y_hat
 
-    tp = np.sum(y_hat & test_y.astype(bool))
-    fp = np.sum(y_hat & ~test_y.astype(bool))
+    y_pred = (y_hat > 0.4).astype(bool)
+
+    tp = np.sum(y_pred & test_y.astype(bool))
+    fp = np.sum(y_pred & ~test_y.astype(bool))
     p  = np.sum(test_y)
 
     #precision = TP/(TP+FP)
@@ -309,10 +317,10 @@ if __name__ == "__main__":
     momentum = np.zeros_like(bin_classifier.w)
 
     # Define hyper-parameters and train-related parameters
-    num_epoch = 100
-    learning_rate = 0.0001
+    num_epoch = 300
+    learning_rate = 0.03
     momentum_rate = 0.9
-    epochs_to_draw = 1000
+    epochs_to_draw = 100
     all_loss = []
     plt.ion()
     #tic = time.perf_counter()
@@ -331,7 +339,7 @@ if __name__ == "__main__":
         if (e % epochs_to_draw == epochs_to_draw-1):
             plot_loss(all_loss)
             plt.show()
-            plt.pause(0.1)
+            #plt.pause(0.1)
             print("Epoch %d: loss is %.5f" % (e+1, loss))
         #toc = time.perf_counter()
         #print(toc-tic)

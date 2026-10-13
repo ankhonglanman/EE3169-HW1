@@ -4,9 +4,11 @@ This file is for binary classification using TensorFlow
 
 import numpy as np
 import matplotlib.pyplot as plt
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from util import get_vehicle_data
 from logistic_np import *
+
+tf.compat.v1.disable_eager_execution()
 
 if __name__ == "__main__":
     np.random.seed(2018)
@@ -37,25 +39,39 @@ if __name__ == "__main__":
 
     # [TODO 1.11] Create TF placeholders to feed train_x and train_y when training
 
+    x = tf.placeholder(tf.float32, shape = (None, 4097), name = "image_pixel")
+
+    y = tf.placeholder(tf.float32, shape = (None, 1), name = "classifier_out")
 
     # [TODO 1.12] Create weights (W) using TF variables
 
+    w = tf.Variable(tf.random.normal(shape = (4097, 1), stddev = 0.01));
+
+    logits = tf.matmul(x, w)
 
     # [TODO 1.13] Create a feed-forward operator
 
+    z = tf.nn.sigmoid(logits, name = "target_function")
+
+    pred = tf.cast(tf.greater(z, 0.5), tf.float32)  
 
     # [TODO 1.14] Write the cost function
-    #cost = -tf.reduce_sum(y*tf.log(pred)+(1-y)*tf.log(1-pred))/num_train
 
+    z = tf.clip_by_value(z, 1e-7, 1 - 1e-7)
+
+    cost = -tf.reduce_sum(y * tf.math.log(z) + (1-y) * tf.math.log(1-z)) / num_train
 
     # Define hyper-parameters and train-related parameters
-    num_epoch = 1000
-    learning_rate = 0.01
-#    momentum_rate = 0.9
+    
+    num_epoch = 300
+    learning_rate = 0.03
+    momentum_rate = 0.9
 
     # [TODO 1.15] Create an SGD optimizer
     
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
 
+    train_op = optimizer.minimize(cost)
 
     # Some meta parameters
     epochs_to_draw = 100
@@ -70,11 +86,12 @@ if __name__ == "__main__":
         sess.run(init)
 
         for e in range(num_epoch):
-            tic = time.clock()
+            #tic = time.perf_counter()
             # [TODO 1.16] Compute loss and update weights here
             
             # Update weights...
             
+            _, loss = sess.run([train_op, cost], feed_dict = {x: train_x, y: train_y})
 
             all_loss.append(loss)
 
@@ -83,7 +100,7 @@ if __name__ == "__main__":
                 plt.show()
                 plt.pause(0.1)
                 print("Epoch %d: loss is %.5f" % (e+1, loss))
-            toc = time.clock()
-            print(toc-tic)
+            #toc = time.perf_counter()
+            #print(toc-tic)
         y_hat = sess.run(pred, feed_dict={x: test_x})
         test(y_hat, test_y)
