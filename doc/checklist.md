@@ -24,11 +24,11 @@
 
 ## Bài 2 (NumPy) — Phân loại đa lớp (Softmax)
 
-- [ ] TODO 2.1 - Chuẩn hóa dữ liệu
-- [ ] TODO 2.2 - Tạo ma trận one-hot
-- [ ] TODO 2.3 - Tính các giá trị phân loại
-- [ ] TODO 2.4 - Tính độ lỗi
-- [ ] TODO 2.5 - Tính đạo hàm
+- [x] TODO 2.1 - Chuẩn hóa dữ liệu
+- [x] TODO 2.2 - Tạo ma trận one-hot
+- [x] TODO 2.3 - Tính các giá trị phân loại
+- [x] TODO 2.4 - Tính độ lỗi
+- [x] TODO 2.5 - Tính đạo hàm
 - [ ] TODO 2.6 - Đề xuất điều kiện dừng
 - [ ] TODO 2.7 - Đánh giá mô hình phân loại
 
@@ -41,4 +41,4 @@
 
 ---
 
-**Tiến độ:** 1 / 27 hoàn thành
+**Tiến độ:** 21 / 27 hoàn thành

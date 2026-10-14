@@ -214,7 +214,7 @@ def test(y_hat, test_y):
     # [TODO 1.10]
     # Compute test scores using test_y and y_hat
 
-    y_pred = (y_hat > 0.4).astype(bool)
+    y_pred = (y_hat > 0.5).astype(bool)
 
     tp = np.sum(y_pred & test_y.astype(bool))
     fp = np.sum(y_pred & ~test_y.astype(bool))

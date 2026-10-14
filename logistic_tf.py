@@ -11,6 +11,7 @@ from logistic_np import *
 tf.compat.v1.disable_eager_execution()
 
 if __name__ == "__main__":
+
     np.random.seed(2018)
     tf.set_random_seed(2018)
 
@@ -39,27 +40,33 @@ if __name__ == "__main__":
 
     # [TODO 1.11] Create TF placeholders to feed train_x and train_y when training
 
-    x = tf.placeholder(tf.float32, shape = (None, 4097), name = "image_pixel")
+    train_x = tf.constant(train_x, dtype=tf.float32, name="image_pixel")
+    
+    train_y = tf.constant(train_y, dtype=tf.float32, name="classifier_out")
 
-    y = tf.placeholder(tf.float32, shape = (None, 1), name = "classifier_out")
+    x_test = tf.constant(test_x, dtype=tf.float32, name="test_pixel")
 
     # [TODO 1.12] Create weights (W) using TF variables
 
-    w = tf.Variable(tf.random.normal(shape = (4097, 1), stddev = 0.01));
+    w = tf.Variable(tf.random.normal(shape = (4097, 1), stddev = 0.01), name="w")
 
-    logits = tf.matmul(x, w)
+    logits = tf.matmul(train_x, w)
+
+    logits_test = tf.matmul(x_test, w)
 
     # [TODO 1.13] Create a feed-forward operator
 
     z = tf.nn.sigmoid(logits, name = "target_function")
 
-    pred = tf.cast(tf.greater(z, 0.5), tf.float32)  
+    z_test = tf.nn.sigmoid(logits_test, name = "target_function_test")
+
+    pred_test = tf.cast(tf.greater(z_test, 0.5), tf.float32)  
 
     # [TODO 1.14] Write the cost function
 
     z = tf.clip_by_value(z, 1e-7, 1 - 1e-7)
 
-    cost = -tf.reduce_sum(y * tf.math.log(z) + (1-y) * tf.math.log(1-z)) / num_train
+    cost = -tf.reduce_sum(train_y * tf.math.log(z) + (1-train_y) * tf.math.log(1-z)) / num_train
 
     # Define hyper-parameters and train-related parameters
     
@@ -91,7 +98,7 @@ if __name__ == "__main__":
             
             # Update weights...
             
-            _, loss = sess.run([train_op, cost], feed_dict = {x: train_x, y: train_y})
+            _, loss = sess.run([train_op, cost])
 
             all_loss.append(loss)
 
@@ -102,5 +109,5 @@ if __name__ == "__main__":
                 print("Epoch %d: loss is %.5f" % (e+1, loss))
             #toc = time.perf_counter()
             #print(toc-tic)
-        y_hat = sess.run(pred, feed_dict={x: test_x})
+        y_hat = sess.run(pred_test)
         test(y_hat, test_y)

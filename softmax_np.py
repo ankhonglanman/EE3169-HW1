@@ -28,7 +28,11 @@ class SoftmaxClassifier(LogisticClassifier):
         # [TODO 2.3]
         # Compute softmax
 
-        return 
+        c = np.max(x, axis=1, keepdims=True)  
+
+        exp_x = np.exp(x - c)                     
+        
+        return exp_x / np.sum(exp_x, axis=1, keepdims=True)
 
 
     def feed_forward(self, x):
@@ -39,8 +43,10 @@ class SoftmaxClassifier(LogisticClassifier):
         """
         # [TODO 2.3]
         # Compute a feed forward pass
-        
-        return 
+
+        z = np.dot(x, self.w)
+
+        return self.softmax(z) 
 
 
     def compute_loss(self, y, y_hat):
@@ -53,7 +59,13 @@ class SoftmaxClassifier(LogisticClassifier):
         # [TODO 2.4]
         # Compute categorical loss
 
-        return 
+        eps = 1e-12
+
+        loss = np.multiply(y, np.log(y_hat + eps))
+
+        num_samples = y.shape[0]
+
+        return -np.sum(loss / num_samples) 
         
 
 
@@ -67,7 +79,11 @@ class SoftmaxClassifier(LogisticClassifier):
         # [TODO 2.5]
         # Compute gradient of the loss function with respect to w
 
-        return 
+        num_samples = y.shape[0]
+
+        grad = np.dot(x.T, y_hat - y) / num_samples
+
+        return grad
 
 
 def plot_loss(train_loss, val_loss):
@@ -101,9 +117,16 @@ def normalize(train_x, val_x, test_x):
     # [TODO 2.1]
     # train_mean and train_std should have the shape of (1, 1)
 
-    
+    eps = 1e-8
 
-    return 
+    train_mean = np.mean(train_x)
+    train_std = np.std(train_x)
+
+    train_x = (train_x - train_mean) / (train_std + eps)
+    val_x = (val_x - train_mean) / (train_std + eps)
+    test_x = (test_x - train_mean) / (train_std + eps)
+    
+    return  train_x, val_x, test_x
 
 def create_one_hot(labels, num_k=10):
     """create_one_hot
@@ -114,6 +137,8 @@ def create_one_hot(labels, num_k=10):
     """
     # [TODO 2.2]
     # Create the one-hot label matrix here based on labels
+
+    one_hot_labels = np.eye(num_k)[labels]
     
     return one_hot_labels
 
@@ -132,7 +157,12 @@ def test(y_hat, test_y):
     # [TODO 2.7]
     # Compute the confusion matrix here
 
-    #confusion_mat = confusion_mat/np.sum(confusion_mat,axis=1)
+    y_pred = y_hat.argmax(axis=1)
+    test_y = test_y.argmax(axis=1)
+
+    confusion_mat = np.bincount(10 * test_y + y_pred, minlength=100).reshape(10, 10)
+
+    confusion_mat = confusion_mat/np.sum(confusion_mat,axis=1, keepdims=True)
     np.set_printoptions(precision=2)
     print('Confusion matrix:')
     print(confusion_mat)
@@ -177,10 +207,14 @@ if __name__ == "__main__":
     epochs_to_draw = 10
     all_train_loss = []
     all_val_loss = []
+    patience = 20          
+    min_delta = 1e-6      
+    best_val_loss = np.inf
+    wait = 0
     plt.ion()
 
     for e in range(num_epoch):    
-        tic = time.clock()
+        #tic = time.clock()
         train_y_hat = dec_classifier.feed_forward(train_x)
         val_y_hat = dec_classifier.feed_forward(val_x)
 
@@ -196,10 +230,19 @@ if __name__ == "__main__":
 
         all_train_loss.append(train_loss) 
         all_val_loss.append(val_loss)
-        toc = time.clock()
-        print(toc-tic)
+        #toc = time.clock()
+        #print(toc-tic)
         # [TODO 2.6]
         # Propose your own stopping condition here
+
+        if val_loss < best_val_loss - min_delta:
+            best_val_loss = val_loss      
+            wait = 0                      
+        else:
+            wait += 1                     
+            if wait >= patience:
+                print(f'Early stop at epoch {e}, best val loss = {best_val_loss:.4f}')
+                break
 
     y_hat = dec_classifier.feed_forward(test_x)
     test(y_hat, test_y)
