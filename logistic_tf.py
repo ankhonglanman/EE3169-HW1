@@ -50,28 +50,28 @@ if __name__ == "__main__":
 
     w = tf.Variable(tf.random.normal(shape = (4097, 1), stddev = 0.01), name="w")
 
-    logits = tf.matmul(train_x, w)
+    z = tf.matmul(train_x, w)
 
-    logits_test = tf.matmul(x_test, w)
+    z_test = tf.matmul(x_test, w)
 
     # [TODO 1.13] Create a feed-forward operator
 
-    z = tf.nn.sigmoid(logits, name = "target_function")
+    y_hat = tf.nn.sigmoid(z, name = "probs")
 
-    z_test = tf.nn.sigmoid(logits_test, name = "target_function_test")
+    y_hat_test = tf.nn.sigmoid(z_test, name = "probs_test")
 
-    pred_test = tf.cast(tf.greater(z_test, 0.5), tf.float32)  
+    pred_test = tf.cast(tf.greater(y_hat_test, 0.5), tf.float32)  
 
     # [TODO 1.14] Write the cost function
 
-    z = tf.clip_by_value(z, 1e-7, 1 - 1e-7)
+    y_hat = tf.clip_by_value(y_hat, 1e-7, 1 - 1e-7)
 
-    cost = -tf.reduce_sum(train_y * tf.math.log(z) + (1-train_y) * tf.math.log(1-z)) / num_train
+    cost = -tf.reduce_sum(train_y * tf.math.log(y_hat) + (1-train_y) * tf.math.log(1-y_hat)) / num_train
 
     # Define hyper-parameters and train-related parameters
     
-    num_epoch = 300
-    learning_rate = 0.03
+    num_epoch = 500
+    learning_rate = 0.02
     momentum_rate = 0.9
 
     # [TODO 1.15] Create an SGD optimizer

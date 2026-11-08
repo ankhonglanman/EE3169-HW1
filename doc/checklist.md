@@ -29,16 +29,16 @@
 - [x] TODO 2.3 - Tính các giá trị phân loại
 - [x] TODO 2.4 - Tính độ lỗi
 - [x] TODO 2.5 - Tính đạo hàm
-- [ ] TODO 2.6 - Đề xuất điều kiện dừng
-- [ ] TODO 2.7 - Đánh giá mô hình phân loại
+- [x] TODO 2.6 - Đề xuất điều kiện dừng
+- [x] TODO 2.7 - Đánh giá mô hình phân loại
 
 ## Bài 2 (TensorFlow)
 
-- [ ] TODO 2.8 - Tạo TF placeholders, variables và SGD optimizer, cập nhật w
-- [ ] TODO 2.9 - Tạo toán tử feed forward
-- [ ] TODO 2.10 - Tính độ lỗi
-- [ ] TODO 2.11 - Tạo điều kiện dừng
+- [x] TODO 2.8 - Tạo TF placeholders, variables và SGD optimizer, cập nhật w
+- [x] TODO 2.9 - Tạo toán tử feed forward
+- [x] TODO 2.10 - Tính độ lỗi
+- [x] TODO 2.11 - Tạo điều kiện dừng
 
 ---
 
-**Tiến độ:** 21 / 27 hoàn thành
+**Tiến độ:** 27 / 27 hoàn thành
