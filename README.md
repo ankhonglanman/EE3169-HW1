@@ -1,6 +1,6 @@
 # EE3169 - Homework 1: Machine Learning
 
-## Cấu trúc thư mục
+## Project Structure
 
 ```text
 EE3169-HW1/
@@ -40,7 +40,7 @@ EE3169-HW1/
 └── README.md
 ```
 
-## Cài đặt thư viện
+## Libraries installation
 
 ```bash
 pip install -r requirements.txt
